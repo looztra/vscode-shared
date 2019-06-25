@@ -1,0 +1,76 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "kubeval current file",
+      "type": "shell",
+      "command": "kubeval ${file}",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [
+        {
+          "owner": "kubeval",
+          "fileLocation": [
+            "absolute"
+          ],
+          "pattern": [
+            {
+              "regexp": "^The document (.*\\.yml) contains an invalid Pod$",
+              "file": 1
+            },
+            {
+              "regexp": "^---> (.*)$",
+              "message": 1,
+              "line": 1,
+              "loop": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "format yaml with yamkix (force single quotes / docker)",
+      "type": "shell",
+      "command": "docker container run -ti --rm -v ${workspaceFolder}:/workspace looztra/yamkix:latest --no-quotes-preserved --input /workspace/${relativeFile}",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "format yaml with yamkix (force single quotes)",
+      "type": "shell",
+      "command": "yamkix --no-quotes-preserved --input ${file}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run eclint on current file (docker)",
+      "type": "shell",
+      "command": "docker container run -ti --rm -v ${workspaceFolder}:/workspace qima/eclint:alpine /workspace/${relativeFile}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
